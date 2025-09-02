@@ -1,7 +1,9 @@
 package io.github.realMorgon.signTextGenerator;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandManager;
 import co.aikar.commands.annotation.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -9,13 +11,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 @CommandAlias("givesign")
 public class GiveSignCommand extends BaseCommand {
 
     @Default
-    @Syntax("<material> <color> <text>")
-    @CommandCompletion("oak|spruce|birch|jungle|acacia|dark_oak|mangrove|cherry|bamboo|crimson|warped black|dark_blue|dark_green|dark_aqua|dark_red|dark_purple|gold|gray|dark_gray|blue|green|aqua|red|light_purple|yellow|white <text>")
-    public void giveSign(String material, String color , String text, Player player) {
+    @Syntax("<material> <color> <font> <text>")
+    @CommandCompletion("@material @color @font")
+    public void giveSign(String material, String color, String font , String text, Player player) {
 
         Material signMaterial;
         ChatColor signColor;
@@ -32,12 +45,37 @@ public class GiveSignCommand extends BaseCommand {
             return;
         }
 
-        if (text.length() % 2 != 0) {
+        InputStream inputStream;
+        try {
+            inputStream = SignTextGenerator.getPlugin().getResource("fonts/" + font + ".json");
+        }catch (Exception IOException) {
+            player.sendMessage("Fehler bei der Textgenerierung. Stelle sicher, dass die Schriftart existiert");
+            return;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonLayout jsonLayout;
+        try {
+            jsonLayout = objectMapper.readValue(inputStream, JsonLayout.class);
+        }catch (Exception IOException) {
+            player.sendMessage("Fehler bei der Textgenerierung. Stelle sicher, dass die Schriftart existiert");
+            return;
+        }
+        int maxCharsPerSign = jsonLayout.maxCharsPerSign;
+        if (material.contains("hanging")) {
+            maxCharsPerSign = Math.round((float) maxCharsPerSign / 2);
+        }
+
+        while (text.length() % maxCharsPerSign != 0) {
             text += " ";
         }
 
-        for (int i = 0; i < text.length() / 2; i++) {
-            String [] signText = TextGeneration.generateText(text.substring(i * 2, i * 2 + 2));
+        for (int i = 0; i < text.length() / maxCharsPerSign; i++) {
+            String currentChars = text.substring(i * maxCharsPerSign, i * maxCharsPerSign + maxCharsPerSign);
+            String [] signText = TextGeneration.generateText(currentChars, font);
+            if (signText == null) {
+                player.sendMessage("Fehler bei der Textgenerierung. Stelle sicher, dass die Schriftart existiert und die gewünschten Zeichen enthält.");
+                return;
+            }
             ItemStack sign = new ItemStack(signMaterial);
             BlockStateMeta meta = (BlockStateMeta) sign.getItemMeta();
             Sign signBlock = (Sign) meta.getBlockState();
@@ -47,7 +85,7 @@ public class GiveSignCommand extends BaseCommand {
             signBlock.setLine(3, signColor + signText[3]);
             signBlock.setGlowingText(true);
             meta.setBlockState(signBlock);
-            meta.setDisplayName(signColor + "§r" + text.substring(0, (i + 1) * 2 - 2) + text.substring(i * 2, i * 2 + 2).toUpperCase() + text.substring(i * 2 + 2));
+            meta.setDisplayName(signColor + "§r" + text.substring(0, (i + 1) * maxCharsPerSign - maxCharsPerSign) + ChatColor.BOLD + currentChars + ChatColor.RESET + text.substring(i * maxCharsPerSign + maxCharsPerSign));
             sign.setItemMeta(meta);
             player.getInventory().addItem(sign);
         }
