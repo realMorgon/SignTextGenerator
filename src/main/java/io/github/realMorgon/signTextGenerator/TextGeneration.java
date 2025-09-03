@@ -29,12 +29,13 @@ public class TextGeneration {
 
         for (int i = 0; i < text.length(); i++) {
             String[] charLines;
-            try {
-                char c = text.charAt(i);
-                charLines = charMap.get(c);
-            }catch (Exception IOException) {
-                return null;
-            }
+
+            char c = text.charAt(i);
+            charLines = charMap.get(c);
+
+
+            if (charLines == null) return null;
+
             for (int j = 0; j < 4; j++) {
                 if (lines[j] == null) {
                     lines[j] = charLines[j];

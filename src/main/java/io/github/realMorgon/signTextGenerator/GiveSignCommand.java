@@ -79,7 +79,7 @@ public class GiveSignCommand extends BaseCommand {
             String [] signText = TextGeneration.generateText(currentChars, font);
             if (signText == null) {
                 player.sendMessage("Error generating text. Make sure the font exists and contains the desired characters.");
-                return;
+                continue;
             }
             ItemStack sign = new ItemStack(signMaterial);
             BlockStateMeta meta = (BlockStateMeta) sign.getItemMeta();
