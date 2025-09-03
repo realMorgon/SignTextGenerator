@@ -30,18 +30,23 @@ public class GiveSignCommand extends BaseCommand {
     @CommandCompletion("@material @color @font")
     public void giveSign(String material, String color, String font , String text, Player player) {
 
+        if(player.getGameMode() != org.bukkit.GameMode.CREATIVE) {
+            player.sendMessage("You need to be in creative mode to use this command.");
+            return;
+        }
+
         Material signMaterial;
         ChatColor signColor;
         try {
             signMaterial = Material.valueOf(material.toUpperCase() + "_SIGN");
         } catch (IllegalArgumentException e) {
-            player.sendMessage("Ungültiges Material: " + material);
+            player.sendMessage("Invalid material: " + material);
             return;
         }
         try {
             signColor = ChatColor.valueOf(color.toUpperCase());
         } catch (IllegalArgumentException e) {
-            player.sendMessage("Ungültige Farbe: " + text);
+            player.sendMessage("Invalid color: " + text);
             return;
         }
 
@@ -49,7 +54,7 @@ public class GiveSignCommand extends BaseCommand {
         try {
             inputStream = SignTextGenerator.getPlugin().getResource("fonts/" + font + ".json");
         }catch (Exception IOException) {
-            player.sendMessage("Fehler bei der Textgenerierung. Stelle sicher, dass die Schriftart existiert");
+            player.sendMessage("Error generating text. Make sure the font exists.");
             return;
         }
         ObjectMapper objectMapper = new ObjectMapper();
@@ -57,7 +62,7 @@ public class GiveSignCommand extends BaseCommand {
         try {
             jsonLayout = objectMapper.readValue(inputStream, JsonLayout.class);
         }catch (Exception IOException) {
-            player.sendMessage("Fehler bei der Textgenerierung. Stelle sicher, dass die Schriftart existiert");
+            player.sendMessage("Error generating text. Make sure the font exists.");
             return;
         }
         int maxCharsPerSign = jsonLayout.maxCharsPerSign;
@@ -73,7 +78,7 @@ public class GiveSignCommand extends BaseCommand {
             String currentChars = text.substring(i * maxCharsPerSign, i * maxCharsPerSign + maxCharsPerSign);
             String [] signText = TextGeneration.generateText(currentChars, font);
             if (signText == null) {
-                player.sendMessage("Fehler bei der Textgenerierung. Stelle sicher, dass die Schriftart existiert und die gewünschten Zeichen enthält.");
+                player.sendMessage("Error generating text. Make sure the font exists and contains the desired characters.");
                 return;
             }
             ItemStack sign = new ItemStack(signMaterial);
