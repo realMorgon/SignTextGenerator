@@ -1,4 +1,4 @@
-![Modrinth Version](https://img.shields.io/modrinth/v/1YGXPQtK?style=flat&logo=modrinth&logoColor=%2300AF5C&label=Get%20it%20on%20modrinth&color=%2300AF5C&link=https%3A%2F%2Fmodrinth.com%2Fproject%2F1YGXPQtK)
+[![Modrinth Version](https://img.shields.io/modrinth/v/1YGXPQtK?style=flat&logo=modrinth&logoColor=%2300AF5C&label=Get%20it%20on%20modrinth&color=%2300AF5C)](https://modrinth.com/project/1YGXPQtK)
 
 ## A simple tool to generate big sign texts
 #### Developed for [BTE Germany](https://bte-germany.de/de) \([GitHub](https://github.com/BTE-Germany)\). <br>
