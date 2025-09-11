@@ -12,7 +12,7 @@ You may need to adjust some characters by hand, depending on the combination
 
 # Adding your own font:
 1. Fork this repository
-2. Add your font as JSON file to the resources/fonts directory
+2. Add your font as FONT_NAME.json file to ``/src/main/resources/fonts/``
 3. Feel free to create a PR, so others can also use your font
 
 # Font file format
