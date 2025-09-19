@@ -27,8 +27,9 @@ public class GiveSignCommand extends BaseCommand {
 
     @Default
     @Syntax("<material> <color> <font> <text>")
-    @CommandCompletion("@material @color @font")
-    public void giveSign(String material, String color, String font , String text, Player player) {
+    @CommandCompletion("@material @color @font <text>")
+    @Description("Gives a sign with custom text")
+    public void giveSign(Player player, String material, String color, String font , String text) {
 
         if(player.getGameMode() != org.bukkit.GameMode.CREATIVE) {
             player.sendMessage("You need to be in creative mode to use this command.");
@@ -46,7 +47,7 @@ public class GiveSignCommand extends BaseCommand {
         try {
             signColor = ChatColor.valueOf(color.toUpperCase());
         } catch (IllegalArgumentException e) {
-            player.sendMessage("Invalid color: " + text);
+            player.sendMessage("Invalid color: " + color);
             return;
         }
 
