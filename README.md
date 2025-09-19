@@ -1,7 +1,11 @@
+[![Modrinth Version](https://img.shields.io/modrinth/v/1YGXPQtK?style=flat&logo=modrinth&logoColor=%2300AF5C&label=Get%20it%20on%20modrinth&color=%2300AF5C)](https://modrinth.com/project/1YGXPQtK)
+
 ## A simple tool to generate big sign texts
 #### Developed for [BTE Germany](https://bte-germany.de/de) \([GitHub](https://github.com/BTE-Germany)\). <br>
 
 <img width="1502" height="101" alt="2025-09-02_21 42 56_edited" src="https://github.com/user-attachments/assets/78fe5f74-a868-42b2-89bb-e9354aa22baa" />
+<br>
+Font "signletters" by Hugleton
 
 # Usage:
 You need to be in creative mode to use the command. <br>
@@ -10,7 +14,7 @@ You may need to adjust some characters by hand, depending on the combination
 
 # Adding your own font:
 1. Fork this repository
-2. Add your font as JSON file to the resources/fonts directory
+2. Add your font as FONT_NAME.json file to ``/src/main/resources/fonts/``
 3. Feel free to create a PR, so others can also use your font
 
 # Font file format
