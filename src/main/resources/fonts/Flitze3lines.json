@@ -1,5 +1,6 @@
 {
   "maxCharsPerSign" : 4,
+  "maxCharsPerHangingSign" : 2,
   "charMap" : {
 	"": ["    ","    ","    ","    "],
 	"A": ["/'''\\ ","|,,,,,,| ","|   | ",""],
