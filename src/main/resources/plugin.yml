@@ -1,6 +1,6 @@
 name: SignTextGenerator
 version: ${version}
 main: io.github.realMorgon.signTextGenerator.SignTextGenerator
-api-version: '1.17'
+api-version: '1.21.9'
 prefix: SignTextGenerator
 authors: [ Morgon ]

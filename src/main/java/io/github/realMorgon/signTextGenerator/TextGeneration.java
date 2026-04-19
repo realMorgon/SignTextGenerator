@@ -1,9 +1,7 @@
 package io.github.realMorgon.signTextGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bukkit.Bukkit;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -51,5 +49,6 @@ public class TextGeneration {
 
 class JsonLayout {
     public int maxCharsPerSign;
+    public int maxCharsPerHangingSign;
     public HashMap<Character, String[]> charMap;
 }

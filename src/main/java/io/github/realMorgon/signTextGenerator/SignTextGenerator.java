@@ -1,12 +1,11 @@
 package io.github.realMorgon.signTextGenerator;
 
 import co.aikar.commands.PaperCommandManager;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +27,7 @@ public final class SignTextGenerator extends JavaPlugin {
 
         PaperCommandManager manager = new PaperCommandManager(this);
 
-        manager.getCommandCompletions().registerAsyncCompletion("material", c -> {
+        manager.getCommandCompletions().registerAsyncCompletion("material", _ -> {
             Collection<String> materialCompletions = new ArrayList<>();
             for (Material material : Material.values()) {
                 if (material.name().endsWith("_SIGN") && !material.name().contains("WALL")) {
@@ -39,17 +38,15 @@ public final class SignTextGenerator extends JavaPlugin {
             return materialCompletions;
         });
 
-        manager.getCommandCompletions().registerAsyncCompletion("color", c -> {
+        manager.getCommandCompletions().registerAsyncCompletion("color", _ -> {
             Collection<String> colorCompletions = new ArrayList<>();
-            for (ChatColor color : ChatColor.values()) {
-                if (color.isColor()) {
-                    colorCompletions.add(color.name().toLowerCase());
-                }
+            for (NamedTextColor color : NamedTextColor.NAMES.values() ) {
+                colorCompletions.add(color.toString().toLowerCase());
             }
             return colorCompletions;
         });
 
-        manager.getCommandCompletions().registerAsyncCompletion("font", c -> {
+        manager.getCommandCompletions().registerAsyncCompletion("font", _ -> {
             List<String> fileNames = new ArrayList<>();
             URL jarUrl = GiveSignCommand.class.getProtectionDomain().getCodeSource().getLocation();
             try {
@@ -63,7 +60,7 @@ public final class SignTextGenerator extends JavaPlugin {
                         }
                     }
                 }
-            }catch (Exception e){}
+            }catch (Exception _){}
 
             Collection<String> fontCompletions = new ArrayList<>();
             for (String fileName : fileNames) {
