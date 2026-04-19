@@ -1,5 +1,6 @@
 {
   "maxCharsPerSign" : 3,
+  "maxCharsPerHangingSign" : 2,
   "charMap" : {
 	" ": ["      ","      ","      ","      "],
 	"A": ["◢▊█▊◣","█  ݀█","███","█  ݀█"],

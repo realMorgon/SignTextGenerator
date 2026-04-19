@@ -1,28 +1,21 @@
 package io.github.realMorgon.signTextGenerator;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.CommandManager;
 import co.aikar.commands.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
-@CommandAlias("givesign")
+@CommandAlias("give-sign")
 public class GiveSignCommand extends BaseCommand {
 
     @Default
@@ -37,7 +30,7 @@ public class GiveSignCommand extends BaseCommand {
         }
 
         Material signMaterial;
-        ChatColor signColor;
+        NamedTextColor signColor;
         try {
             signMaterial = Material.valueOf(material.toUpperCase() + "_SIGN");
         } catch (IllegalArgumentException e) {
@@ -45,7 +38,7 @@ public class GiveSignCommand extends BaseCommand {
             return;
         }
         try {
-            signColor = ChatColor.valueOf(color.toUpperCase());
+            signColor = NamedTextColor.NAMES.value(color.toLowerCase());
         } catch (IllegalArgumentException e) {
             player.sendMessage("Invalid color: " + color);
             return;
@@ -66,14 +59,18 @@ public class GiveSignCommand extends BaseCommand {
             player.sendMessage("Error generating text. Make sure the font exists.");
             return;
         }
-        int maxCharsPerSign = jsonLayout.maxCharsPerSign;
+        int maxCharsPerSign;
         if (material.contains("hanging")) {
-            maxCharsPerSign = Math.round((float) maxCharsPerSign / 2);
+            maxCharsPerSign = jsonLayout.maxCharsPerHangingSign;
+        }else{
+            maxCharsPerSign = jsonLayout.maxCharsPerSign;
         }
 
-        while (text.length() % maxCharsPerSign != 0) {
-            text += " ";
+        StringBuilder textBuilder = new StringBuilder(text);
+        while (textBuilder.length() % maxCharsPerSign != 0) {
+            textBuilder.append(" ");
         }
+        text = textBuilder.toString();
 
         for (int i = 0; i < text.length() / maxCharsPerSign; i++) {
             String currentChars = text.substring(i * maxCharsPerSign, i * maxCharsPerSign + maxCharsPerSign);
@@ -85,13 +82,17 @@ public class GiveSignCommand extends BaseCommand {
             ItemStack sign = new ItemStack(signMaterial);
             BlockStateMeta meta = (BlockStateMeta) sign.getItemMeta();
             Sign signBlock = (Sign) meta.getBlockState();
-            signBlock.setLine(0, signColor + signText[0]);
-            signBlock.setLine(1, signColor + signText[1]);
-            signBlock.setLine(2, signColor + signText[2]);
-            signBlock.setLine(3, signColor + signText[3]);
-            signBlock.setGlowingText(true);
+            signBlock.getSide(Side.FRONT).line(0, Component.text(signText[0], signColor));
+            signBlock.getSide(Side.FRONT).line(1, Component.text(signText[1], signColor));
+            signBlock.getSide(Side.FRONT).line(2, Component.text(signText[2], signColor));
+            signBlock.getSide(Side.FRONT).line(3, Component.text(signText[3], signColor));
+            signBlock.getSide(Side.FRONT).setGlowingText(true);
             meta.setBlockState(signBlock);
-            meta.setDisplayName(signColor + "§r" + text.substring(0, (i + 1) * maxCharsPerSign - maxCharsPerSign) + ChatColor.BOLD + currentChars + ChatColor.RESET + text.substring(i * maxCharsPerSign + maxCharsPerSign));
+            meta.displayName(Component.text()
+                    .append(Component.text("§r" + text.substring(0, (i + 1) * maxCharsPerSign - maxCharsPerSign), signColor))
+                    .append(Component.text(currentChars, signColor, TextDecoration.BOLD))
+                    .append(Component.text(text.substring(i * maxCharsPerSign + maxCharsPerSign), signColor))
+                    .build());
             sign.setItemMeta(meta);
             player.getInventory().addItem(sign);
         }
