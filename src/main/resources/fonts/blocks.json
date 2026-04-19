@@ -1,6 +1,7 @@
 {
   "maxCharsPerSign" : 2,
   "maxCharsPerHangingSign" : 1,
+  "ownLetterSeparation": false,
   "charMap" : {
     " ": ["        ", "        ", "        ", "        "],
     "a": ["████","█    █", "████", "█    █"],

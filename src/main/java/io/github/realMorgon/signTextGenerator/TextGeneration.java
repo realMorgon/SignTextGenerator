@@ -37,6 +37,8 @@ public class TextGeneration {
             for (int j = 0; j < 4; j++) {
                 if (lines[j] == null) {
                     lines[j] = charLines[j];
+                }else if (jsonLayout.ownLetterSeparation) {
+                    lines[j] += charLines[j];
                 }else {
                     lines[j] += " " + charLines[j];
                 }
@@ -50,5 +52,6 @@ public class TextGeneration {
 class JsonLayout {
     public int maxCharsPerSign;
     public int maxCharsPerHangingSign;
+    public boolean ownLetterSeparation;
     public HashMap<Character, String[]> charMap;
 }
