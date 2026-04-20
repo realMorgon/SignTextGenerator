@@ -1,6 +1,7 @@
 package io.github.realMorgon.signTextGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ public class TextGeneration {
         InputStream inputStream;
 
         try {
-            inputStream = SignTextGenerator.getPlugin().getResource("fonts/" + font + ".json");
+            inputStream = JavaPlugin.getPlugin(SignTextGenerator.class).getDataPath().normalize().resolve(font + ".json").toUri().toURL().openStream();
         }catch (Exception IOException) {
             return null;
         }
