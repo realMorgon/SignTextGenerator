@@ -38,7 +38,7 @@ public class TextGeneration {
                 if (lines[j] == null) {
                     lines[j] = charLines[j];
                 }else {
-                    lines[j] += " " + charLines[j];
+                    lines[j] += "" + charLines[j];
                 }
             }
         }
