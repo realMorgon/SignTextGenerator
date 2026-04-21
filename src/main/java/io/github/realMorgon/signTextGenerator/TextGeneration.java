@@ -1,7 +1,6 @@
 package io.github.realMorgon.signTextGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ public class TextGeneration {
         InputStream inputStream;
 
         try {
-            inputStream = JavaPlugin.getPlugin(SignTextGenerator.class).getDataPath().normalize().resolve(font + ".json").toUri().toURL().openStream();
+            inputStream = SignTextGenerator.getPlugin().getResource("fonts/" + font + ".json");
         }catch (Exception IOException) {
             return null;
         }
@@ -38,10 +37,8 @@ public class TextGeneration {
             for (int j = 0; j < 4; j++) {
                 if (lines[j] == null) {
                     lines[j] = charLines[j];
-                }else if (jsonLayout.ownLetterSeparation) {
-                    lines[j] += charLines[j];
                 }else {
-                    lines[j] += " " + charLines[j];
+                    lines[j] += "" + charLines[j];
                 }
             }
         }
@@ -53,6 +50,5 @@ public class TextGeneration {
 class JsonLayout {
     public int maxCharsPerSign;
     public int maxCharsPerHangingSign;
-    public boolean ownLetterSeparation;
     public HashMap<Character, String[]> charMap;
 }

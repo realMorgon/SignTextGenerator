@@ -12,9 +12,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 @CommandAlias("give-sign")
@@ -24,7 +22,7 @@ public class GiveSignCommand extends BaseCommand {
     @Syntax("<material> <color> <font> <text>")
     @CommandCompletion("@material @color @font <text>")
     @Description("Gives a sign with custom text")
-    public void giveSign(Player player, String material, String color, String font , String text) throws IOException {
+    public void giveSign(Player player, String material, String color, String font , String text) {
 
         if(player.getGameMode() != org.bukkit.GameMode.CREATIVE) {
             player.sendMessage("You need to be in creative mode to use this command.");
@@ -48,10 +46,10 @@ public class GiveSignCommand extends BaseCommand {
 
         InputStream inputStream;
         try {
-            inputStream = JavaPlugin.getPlugin(SignTextGenerator.class).getDataPath().normalize().resolve(font + ".json").toUri().toURL().openStream();
+            inputStream = SignTextGenerator.getPlugin().getResource("fonts/" + font + ".json");
         }catch (Exception IOException) {
             player.sendMessage("Error generating text. Make sure the font exists.");
-            throw IOException;
+            return;
         }
         ObjectMapper objectMapper = new ObjectMapper();
         JsonLayout jsonLayout;
@@ -91,16 +89,12 @@ public class GiveSignCommand extends BaseCommand {
             signBlock.getSide(Side.FRONT).setGlowingText(true);
             meta.setBlockState(signBlock);
             meta.displayName(Component.text()
-                    .append(Component.text("§r" + text.substring(0, (i + 1) * maxCharsPerSign - maxCharsPerSign), signColor, TextDecoration.ITALIC))
-                    .append(Component.text(currentChars, signColor, TextDecoration.BOLD, TextDecoration.ITALIC))
-                    .append(Component.text(text.substring(i * maxCharsPerSign + maxCharsPerSign), signColor, TextDecoration.ITALIC))
+                    .append(Component.text("§r" + text.substring(0, (i + 1) * maxCharsPerSign - maxCharsPerSign), signColor))
+                    .append(Component.text(currentChars, signColor, TextDecoration.BOLD))
+                    .append(Component.text(text.substring(i * maxCharsPerSign + maxCharsPerSign), signColor))
                     .build());
-            boolean success = sign.setItemMeta(meta);
-            if (success) {
-                player.getInventory().addItem(sign);
-            }else {
-                player.sendMessage("Error giving sign. Could not set item meta.");
-            }
+            sign.setItemMeta(meta);
+            player.getInventory().addItem(sign);
         }
 
 
