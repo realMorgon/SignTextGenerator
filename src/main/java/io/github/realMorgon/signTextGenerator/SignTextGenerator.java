@@ -96,7 +96,7 @@ public final class SignTextGenerator extends JavaPlugin {
 
         PaperCommandManager manager = new PaperCommandManager(this);
 
-        manager.getCommandCompletions().registerAsyncCompletion("material", _ -> {
+        manager.getCommandCompletions().registerAsyncCompletion("material", context -> {
             Collection<String> materialCompletions = new ArrayList<>();
             for (Material material : Material.values()) {
                 if (material.name().endsWith("_SIGN") && !material.name().contains("WALL")) {
@@ -107,7 +107,7 @@ public final class SignTextGenerator extends JavaPlugin {
             return materialCompletions;
         });
 
-        manager.getCommandCompletions().registerAsyncCompletion("color", _ -> {
+        manager.getCommandCompletions().registerAsyncCompletion("color", context -> {
             Collection<String> colorCompletions = new ArrayList<>();
             for (NamedTextColor color : NamedTextColor.NAMES.values() ) {
                 colorCompletions.add(color.toString().toLowerCase());
@@ -136,7 +136,7 @@ public final class SignTextGenerator extends JavaPlugin {
 
         getLogger().info("Successfully loaded font files from data folder. Available fonts: " + fontCompletions.toString().substring(1, fontCompletions.toString().length() - 1));
 
-        manager.getCommandCompletions().registerAsyncCompletion("font", _ -> fontCompletions);
+        manager.getCommandCompletions().registerAsyncCompletion("font", context -> fontCompletions);
 
         manager.registerCommand(new GiveSignCommand());
 
